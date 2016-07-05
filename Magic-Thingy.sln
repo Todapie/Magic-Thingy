@@ -1,0 +1,23 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2008
+
+Project("{FA45178D-4E5E-4662-9617-C5B752DE8679}") = "Magic-Thingy", "Assembly-CSharp.csproj", "{EAA7EC13-EC6F-1EDB-178E-F0C0C4128CD3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EAA7EC13-EC6F-1EDB-178E-F0C0C4128CD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAA7EC13-EC6F-1EDB-178E-F0C0C4128CD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAA7EC13-EC6F-1EDB-178E-F0C0C4128CD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAA7EC13-EC6F-1EDB-178E-F0C0C4128CD3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
+	EndGlobalSection
+EndGlobal

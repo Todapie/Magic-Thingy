@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class Terrain : MonoBehaviour {
 
+	public int seed = 0;
+
 	public int chunkSize = 20;
 	public int viewSize = 40;
 
@@ -13,6 +15,10 @@ public class Terrain : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		if (seed == 0) {
+			seed = Mathf.FloorToInt (Random.value * int.MaxValue / 100);
+		}
+
 		chunks.Add((Chunk)Instantiate (chunkFab));
 
 	}

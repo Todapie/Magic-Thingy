@@ -51,5 +51,17 @@ public class PlayerIO : MonoBehaviour {
 			//chunk.SetBrick (x, y, z, 0);
 			terrain.GetChunk(x, y, z).SetBrick (x, y, z, 0);
 		}
+
+		float wheel = Input.GetAxis ("Mouse ScrollWheel");
+		if(wheel > 0){
+			activeBlockType++;
+			if (activeBlockType > 4)
+				activeBlockType = 1;
+		}
+		else if (wheel < 0){
+			activeBlockType--;
+			if (activeBlockType < 1)
+				activeBlockType = 4;
+		}
 	}
 }

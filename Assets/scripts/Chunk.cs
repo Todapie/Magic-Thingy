@@ -7,6 +7,11 @@ using System.Net.Configuration;
 [RequireComponent (typeof(MeshCollider))]
 
 public class Chunk : MonoBehaviour {
+	int seed;
+
+	public float detailScale = 25f;
+	public float heightScale = 20;
+
 	public int width = 20;
 	public byte[,,] map;
 
@@ -19,14 +24,20 @@ public class Chunk : MonoBehaviour {
 	protected MeshCollider meshCollider;
 
 	void Start () {
+		seed = Camera.main.GetComponent<Terrain> ().seed;
+
 		meshCollider = GetComponent<MeshCollider> ();
 		map = new byte[width, width, width];
 
-		for (int x = 0; x < width; x++) 
+		int startX = Mathf.FloorToInt(transform.position.x);
+		int startZ = Mathf.FloorToInt(transform.position.z);
+
+		for (int x = startX; x < width + startX; x++) 
 		{
-			for (int z = 0; z < width; z++)
+			for (int z = startZ; z < width + startZ; z++)
 			{
-				map [x, 0, z] = 1;
+				int y = (int)(Mathf.PerlinNoise ((x + seed) / detailScale, (z + seed) / detailScale) * heightScale);
+				setHeight (x - startX, z - startZ, y);
 			}
 		}
 
@@ -36,6 +47,13 @@ public class Chunk : MonoBehaviour {
 		Regenrate ();
 	}
 	
+	public void setHeight(int x, int z, int height) {
+
+		for (int i = 0; i <= height; i++) {
+			map [x, i, z] = 1;
+		}
+
+	}
 
 	void Update () {
 	
@@ -98,6 +116,35 @@ public class Chunk : MonoBehaviour {
 		verts.Add (start + offset2);
 		verts.Add (start + offset1 + offset2);
 
+		Vector2 uvBase;
+		switch (block) {
+		default:
+			uvBase = new Vector2 (0.25f, 0.25f);
+			break;
+		case 2:
+			uvBase = new Vector2 (0.75f, 0.75f);
+			break;
+		case 3:
+			uvBase = new Vector2 (0.25f, 0.75f);
+			break;
+		case 4:
+			uvBase = new Vector2 (0.75f, 0.25f);
+			break;
+		}
+
+		if ((offset1 == Vector3.right) && (offset2 == Vector3.back)) {
+			uv.Add (uvBase);
+			uv.Add (uvBase + new Vector2(0.125f, 0));
+			uv.Add (uvBase + new Vector2(0, 0.125f));
+			uv.Add (uvBase + new Vector2(0.125f, 0.125f));
+		}
+		else {
+			uv.Add (uvBase);
+			uv.Add (uvBase + new Vector2(-0.125f, 0));
+			uv.Add (uvBase + new Vector2(0, 0.125f));
+			uv.Add (uvBase + new Vector2(-0.125f, 0.125f));
+		}
+
 		tris.Add (index + 0);
 		tris.Add (index + 1);
 		tris.Add (index + 2);
@@ -135,6 +182,7 @@ public class Chunk : MonoBehaviour {
 
 		mesh.vertices = verts.ToArray ();
 		mesh.triangles = tris.ToArray ();
+		mesh.uv = uv.ToArray ();
 		mesh.RecalculateNormals ();
 
 		meshCollider.sharedMesh = null;
