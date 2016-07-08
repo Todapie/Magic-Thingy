@@ -6,7 +6,7 @@ using System.Security.AccessControl;
 [RequireComponent (typeof(Terrain))]
 public class PlayerIO : MonoBehaviour {
 	
-	public byte activeBlockType = 1;
+	public byte activeBlockType = 0;
 	public Transform retAdd, retDel;
 
 	public Terrain terrain;
@@ -55,13 +55,13 @@ public class PlayerIO : MonoBehaviour {
 		float wheel = Input.GetAxis ("Mouse ScrollWheel");
 		if(wheel > 0){
 			activeBlockType++;
-			if (activeBlockType > 4)
+			if (activeBlockType > Terrain.blocks.GetCount())
 				activeBlockType = 1;
 		}
 		else if (wheel < 0){
 			activeBlockType--;
 			if (activeBlockType < 1)
-				activeBlockType = 4;
+				activeBlockType = (byte) Terrain.blocks.GetCount();
 		}
 	}
 }

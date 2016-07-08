@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.Configuration;
+using System;
 
 [RequireComponent (typeof(MeshFilter))]
 [RequireComponent (typeof(MeshCollider))]
@@ -80,30 +81,30 @@ public class Chunk : MonoBehaviour {
 
 		if(isTransparent(x - 1, y, z))
 		{
-			offset1 = Vector3.up;
-			offset2 = Vector3.back;
-			DrawFace(start, offset1, offset2, block);
+			offset1 = Vector3.back;
+			offset2 = Vector3.down;
+			DrawFace(start + Vector3.up, offset1, offset2, block);
 		}
 
 		if(isTransparent(x + 1, y, z))
 		{
-			offset1 = Vector3.down;
-			offset2 = Vector3.back;
-			DrawFace(start + Vector3.right + Vector3.up, offset1, offset2, block);
+			offset1 = Vector3.forward;
+			offset2 = Vector3.down;
+			DrawFace(start + Vector3.right + Vector3.up + Vector3.back, offset1, offset2, block);
 		}
 
 		if(isTransparent(x, y, z - 1))
 		{
-			offset1 = Vector3.left;
-			offset2 = Vector3.up;
-			DrawFace(start + Vector3.right + Vector3.back, offset1, offset2, block);
+			offset1 = Vector3.right;
+			offset2 = Vector3.down;
+			DrawFace(start + Vector3.back + Vector3.up, offset1, offset2, block);
 		}
 
 		if(isTransparent(x, y, z + 1))
 		{
-			offset1 = Vector3.right;
-			offset2 = Vector3.up;
-			DrawFace(start, offset1, offset2, block);
+			offset1 = Vector3.left;
+			offset2 = Vector3.down; 
+			DrawFace(start + Vector3.up + Vector3.right, offset1, offset2, block);
 		}
 	}
 
@@ -116,33 +117,22 @@ public class Chunk : MonoBehaviour {
 		verts.Add (start + offset2);
 		verts.Add (start + offset1 + offset2);
 
-		Vector2 uvBase;
-		switch (block) {
-		default:
-			uvBase = new Vector2 (0.25f, 0.25f);
-			break;
-		case 2:
-			uvBase = new Vector2 (0.75f, 0.75f);
-			break;
-		case 3:
-			uvBase = new Vector2 (0.25f, 0.75f);
-			break;
-		case 4:
-			uvBase = new Vector2 (0.75f, 0.25f);
-			break;
-		}
+		BlockType blockType = Terrain.blocks.GetBlock (block);
+		Vector2 uvBase = blockType.UVCoord();
+
+		float uvOff = 64f/1024f;
 
 		if ((offset1 == Vector3.right) && (offset2 == Vector3.back)) {
 			uv.Add (uvBase);
-			uv.Add (uvBase + new Vector2(0.125f, 0));
-			uv.Add (uvBase + new Vector2(0, 0.125f));
-			uv.Add (uvBase + new Vector2(0.125f, 0.125f));
+			uv.Add (uvBase + new Vector2(uvOff, 0));
+			uv.Add (uvBase + new Vector2(0, -uvOff));
+			uv.Add (uvBase + new Vector2(uvOff, -uvOff));
 		}
 		else {
-			uv.Add (uvBase);
-			uv.Add (uvBase + new Vector2(-0.125f, 0));
-			uv.Add (uvBase + new Vector2(0, 0.125f));
-			uv.Add (uvBase + new Vector2(-0.125f, 0.125f));
+			uv.Add (uvBase + new Vector2(0, -uvOff));
+			uv.Add (uvBase + new Vector2(uvOff, -uvOff));
+			uv.Add (uvBase + new Vector2(0, -uvOff * 2));
+			uv.Add (uvBase + new Vector2(uvOff, -uvOff * 2));
 		}
 
 		tris.Add (index + 0);
@@ -199,6 +189,7 @@ public class Chunk : MonoBehaviour {
 
 		if(map[x, y, z] != block) {
 			map [x, y, z] = block;
+			Debug.Log (block);
 			Regenrate ();
 		}
 	}

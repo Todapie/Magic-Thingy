@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 public class Terrain : MonoBehaviour {
 
+	public BlockList _blocks;
+	public static BlockList blocks;
+
 	public int seed = 0;
 
 	public int chunkSize = 20;
@@ -19,6 +22,8 @@ public class Terrain : MonoBehaviour {
 			seed = Mathf.FloorToInt (Random.value * int.MaxValue / 100);
 		}
 
+		blocks = _blocks;
+
 		chunks.Add((Chunk)Instantiate (chunkFab));
 
 	}
@@ -26,6 +31,7 @@ public class Terrain : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		CreateChunksIfWeNeedTo ();
+		//DespawnChunksIfWeNeedTo ();
 	}
 
 	public bool ChunkExists(float x, float z) {
@@ -50,6 +56,19 @@ public class Terrain : MonoBehaviour {
 				int chunkZ = Mathf.FloorToInt (z / chunkSize) * chunkSize;
 
 				chunks.Add ((Chunk) Instantiate(chunkFab, new Vector3(chunkX, 0, chunkZ), Quaternion.identity));
+			}
+		}
+	}
+
+	void DespawnChunksIfWeNeedTo() {
+		for (int a = 0; a < chunks.Count; a++) {
+			if ((transform.position.x - viewSize < chunks [a].transform.position.x + chunkSize) ||
+			   (transform.position.z - viewSize < chunks [a].transform.position.z + chunkSize) ||
+			   (transform.position.x + viewSize > chunks [a].transform.position.x + chunkSize) ||
+			   (transform.position.z + viewSize > chunks [a].transform.position.z + chunkSize)) {
+				Chunk tempChunk = chunks [a];
+				Destroy (tempChunk);
+				chunks.RemoveAt (a);
 			}
 		}
 	}
